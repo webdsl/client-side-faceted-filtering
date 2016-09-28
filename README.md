@@ -1,11 +1,11 @@
 # client-side-faceted-filtering
-Simple javascript library enabling easy implementation of client-side faceted search, or actually faceted filtering of DOM content
+Simple javascript library enabling easy implementation of client-side faceted search, or actually faceted filtering of DOM content.
 
 ## Features
 - Automatic generation of filterable values (the facets)
 - Supports multiple facet categories
 - Supports multiple facet selections from a single or multiple facet categories.
-- Encodes filters into the URL using query-parameters, which are interpret and applied when the library is loaded
+- Encodes filters into the URL using query-parameters, which are interpreted and applied when the library is loaded
 
 ## Dependencies
 jQuery - this library is implemented heavily relying on jQuery selectors
