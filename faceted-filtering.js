@@ -8,23 +8,39 @@ function updateFacets(){
     }
     facetPlaceholderElems.each( function(){
         var current = $(this);
+        var sel = current.attr('data-selected-facets');
+        var hasSel = typeof(sel) !== 'undefined' && sel.length > 0;
         var facetType = current.data('facet-type');
         var dataAttr = 'data-facet-' + facetType;
         var s = facetRetrievalClasses(facetType);
-        var valArray = $(s+ ' ['+ dataAttr + ']')
-            .map( function(){ return $(this).attr(dataAttr+'-order') + '%%' +$(this).attr(dataAttr) } );
-        var htmlArr = $( unique(valArray).sort() )
-            .map( function(){
-                var txt = this.replace(/([^%]*%%)?(.*)/,'$2');
-                if(txt.length < 1){
+
+        //scrape all values, prefixed with optional order (contain duplicates)   
+        var x = $(s+' ['+ dataAttr + ']');
+        var valArray = x
+                      .map( function(){ return this.getAttribute(dataAttr+'-order') + '%%' +this.getAttribute(dataAttr) } );
+        //sort values and remove order info
+        valArraySorted = $( valArray.sort() )
+                         .map( function(){ return this.replace(/([^%]*%%)?(.*)/,'$2'); } );
+        
+        //For already selected facets, assure they get displayed even when they do not exist in the scraped values
+        if( hasSel ){
+            var x = $(sel.split('%%%%'))
+                    .map( function(){ return this.replace(/%%/g,'') });            
+            $.merge(valArraySorted,x);
+        } 
+        var htmlArr = $(unique(valArraySorted)).map( function(){
+                if(this.length < 1){
                     return "";
                 }
-                var ident = '%%'+ txt +'%%';
-                var sel = current.attr('data-selected-facets');
-                var btnClass = facetButtonClass + ' facet-' + ( typeof(sel) !== 'undefined' && sel.indexOf(ident) > -1);
-                return '<div class="' + btnClass + '">' + txt + '</div>' }
+                var ident = '%%'+ this +'%%';
+                var btnClass = facetButtonClass + ' facet-' + ( hasSel && sel.indexOf(ident) > -1);
+                return '<div class="' + btnClass + '">' + this + '</div>' }
             );
-        $(this).html( htmlArr.get().join('') );
+        var html = htmlArr.get().join('');
+        if(html.length < 1){
+            html = '<span class="no-facets">Nothing to filter</span>';
+        }
+        $(this).html( html );
         $(this).children().click(toggleFacet);
     });
 }
@@ -116,7 +132,13 @@ function filterFacets(){
         history.replaceState(null, document.title + " - filtered", newUrl);
     }
     hidableElems.attr('data-is-visible', false);
-    hidableElems.filter(classSelector +', :has(' + classSelector + ')').attr('data-is-visible', true);
+    console.log('class selector:' + classSelector);
+    if(classSelector != "*"){
+        hidableElems.filter(classSelector).attr('data-is-visible', true)
+                      .parents('.hidable').attr('data-is-visible', true);
+    } else {
+        hidableElems.filter(classSelector).attr('data-is-visible', true);
+    }
     hidableElems.filter('[data-is-visible!=true]').hide();
     hidableElems.filter('[data-is-visible=true]').show();
 }
