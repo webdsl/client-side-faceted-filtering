@@ -1,6 +1,11 @@
 # client-side-faceted-filtering
 Simple javascript library enabling easy implementation of client-side faceted search, or actually faceted filtering of DOM content.
 
+## Demo
+This library is used to provide filtering on program pages of conferences hosted on https://conf.researchr.org, such as:
+- https://2018.programming-conference.org/program/program-programming-2018
+- https://2018.splashcon.org/program/program-splash-2018
+
 ## Features
 - Automatic generation of filterable values (the facets)
 - Supports multiple facet categories
