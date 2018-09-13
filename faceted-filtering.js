@@ -136,7 +136,6 @@ function filterFacets(){
         history.replaceState(null, document.title + " - filtered", newUrl);
     }
     hidableElems.attr('data-is-visible', false);
-    console.log('class selector:' + classSelector);
     if(classSelector != "*"){
         hidableElems.filter(classSelector).attr('data-is-visible', true)
                       .parents('.hidable').attr('data-is-visible', true);
