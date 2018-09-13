@@ -1,11 +1,19 @@
 var hidableElems, facetPlaceholderElems;
 var facetButtonClass = "btn-xs btn btn-default";
+function initFacets(){
+  if(!hidableElems){
+    hidableElems = $('.hidable');
+    facetPlaceholderElems = $('.facet-placeholder');
+    initSelectionFromUrl()
+    updateFacets();
+  }
+}
+function reloadFacets(){
+  hidableElems = $('.hidable');
+  facetPlaceholderElems = $('.facet-placeholder');
+  updateFacets();
+}
 function updateFacets(){
-    if(!hidableElems){
-      hidableElems = $('.hidable');
-      facetPlaceholderElems = $('.facet-placeholder');
-      initSelectionFromUrl()
-    }
     facetPlaceholderElems.each( function(){
         var current = $(this);
         var sel = current.attr('data-selected-facets');
@@ -158,4 +166,4 @@ function insertParam2(searchString, key,value)
     return "?" + s;
 }
 
-$('document').ready( updateFacets );
+$('document').ready( initFacets );
