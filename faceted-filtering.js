@@ -14,8 +14,12 @@ function updateFacets(){
         var dataAttr = 'data-facet-' + facetType;
         var s = facetRetrievalClasses(facetType);
 
-        //scrape all values, prefixed with optional order (contain duplicates)   
-        var x = $(s+' ['+ dataAttr + ']');
+        //scrape all values, prefixed with optional order (contain duplicates)
+        var x = $(s + ' ['+ dataAttr + ']');
+        if(s != '*'){
+          var parents = $(s).parents('[' + dataAttr +']');
+          x = $.merge(parents,x);
+        }
         var valArray = x
                       .map( function(){ return this.getAttribute(dataAttr+'-order') + '%%' +this.getAttribute(dataAttr) } );
         //sort values and remove order info
