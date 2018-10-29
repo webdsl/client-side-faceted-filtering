@@ -26,6 +26,6 @@ The script will initialize faceted filtering on document ready
     - `hidable` elements can be nested (e.g. a DOM-element for product category "Electronics" has the `hidable` class, but it also has nested DOM-elements with the `hidable` class for sub-categories "Audio" and "Video". The "Electronics" DOM-element will be hidden when "Audio" and "Video" are also hidden)
   - elements that have the `data-facet-XXXX="filter value"`-attribute. Here `XXXX` is the facet category, and `filter value` is the value that will be filterable within the facet category.
     - Optionally a `data-facet-XXXX-order="ORD"` attribute can be added to customize ordering of the facet values to be displayed in the facet-placeholders. `ORD` is the value to be used for sorting the facet values, using the default string sort.
-  - elements with the `facet-placeholder`-class will be used as the container to add the facet filter elements to, e.g. `<div class="facet-placeholder data-facet-type="XXXX"></div>`. The `data-facet-type="XXXX"`-attribute sets the category for which the placeholder will show the filter values, i.e. there should be elements with `data-facet-XXXX="..."` elsewhere.
+  - elements with the `facet-placeholder`-class will be used as the container to add the facet filter elements to, e.g. `<div class="facet-placeholder" data-facet-type="XXXX"></div>`. The `data-facet-type="XXXX"`-attribute sets the category for which the placeholder will show the filter values, i.e. there should be elements with `data-facet-XXXX="..."` elsewhere.
   
 That's all folks.
