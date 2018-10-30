@@ -87,7 +87,7 @@ function initSelectionFromUrl(){
 }
 
 function toggleFacet(event){
-    var elemText = event.currentTarget.innerHTML;
+    var elemText = event.currentTarget.innerText;
     var facetPlaceholder = $(event.currentTarget).parent('.facet-placeholder');
     var facetType = facetPlaceholder.data('facet-type');
     var currentSel = facetPlaceholder.attr('data-selected-facets');
@@ -104,6 +104,7 @@ function toggleFacet(event){
     filterFacets();
     updateFacets();    
 }
+
 function filterFacets(){
     var newSearchString = document.location.search;
     var classSelector = '*';
@@ -118,7 +119,7 @@ function filterFacets(){
         if(selectedStr.length > 0){
             while (match != null) {
               matches.push(match[1]);
-              selectors.push('[' + dataSelector + '="' + match[1] +'"]');
+              selectors.push('[' + dataSelector + '="' + match[1].replace('"','\\"') +'"]');
               match = myRegexp.exec(selectedStr);              
             }
         }
