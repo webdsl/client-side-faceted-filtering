@@ -78,8 +78,8 @@ function initSelectionFromUrl(){
             match = r.exec(queryString);
             if(match != null){
                 var val = decodeURIComponent(match[2]);
-                var selections = '%%' + val.split(',').join('%%%%') + '%%';
-                $(this).attr('data-selected-facets', selections );
+                var selections = '%%' + val.split('+').join('%%%%') + '%%';
+                $(this).attr('data-selected-facets', searchStringUnEscape(selections) );
             }
         } );
         filterFacets();
@@ -104,7 +104,12 @@ function toggleFacet(event){
     filterFacets();
     updateFacets();    
 }
-
+function searchStringEscape(str) {
+	return str.replace("+", "\\plus");
+}
+function searchStringUnEscape(str) {
+	return str.replace("\\plus,", "+");
+}
 function filterFacets(){
     var newSearchString = document.location.search;
     var classSelector = '*';
@@ -118,12 +123,12 @@ function filterFacets(){
         var matches = []
         if(selectedStr.length > 0){
             while (match != null) {
-              matches.push(match[1]);
+              matches.push( searchStringEscape(match[1]) );
               selectors.push('[' + dataSelector + '="' + match[1].replace('"','\\"') +'"]');
               match = myRegexp.exec(selectedStr);              
             }
         }
-        newSearchString = insertParam2(newSearchString, type, matches.join(','));
+        newSearchString = insertParam2(newSearchString, type, matches.join('+'));
         
         var cl = 'facet-selected-' + type
         hidableElems.removeClass(cl);    
