@@ -87,7 +87,7 @@ function initSelectionFromUrl(){
 }
 
 function toggleFacet(event){
-    var elemText = event.currentTarget.innerText;
+    var elemText = event.currentTarget.textContent;
     var facetPlaceholder = $(event.currentTarget).parent('.facet-placeholder');
     var facetType = facetPlaceholder.data('facet-type');
     var currentSel = facetPlaceholder.attr('data-selected-facets');
