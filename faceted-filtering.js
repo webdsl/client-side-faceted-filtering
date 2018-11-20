@@ -25,7 +25,7 @@ function updateFacets(){
         //scrape all values, prefixed with optional order (contain duplicates)
         var x = $(s + ' ['+ dataAttr + ']');
         if(s != '*'){
-          var parents = $(s).parents('[' + dataAttr +']');
+          var parents = $(s).parents('[' + dataAttr +']').addBack('[' + dataAttr +']');
           x = $.merge(parents,x);
         }
         var valArray = x
