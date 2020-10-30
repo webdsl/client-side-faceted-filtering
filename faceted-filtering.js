@@ -1,5 +1,6 @@
 var hidableElems, facetPlaceholderElems;
 var facetButtonClass = "btn-xs btn btn-default";
+var hasFiltersInURL = false;
 function initFacets(){
   if(!hidableElems){
     hidableElems = $('.hidable');
@@ -77,6 +78,7 @@ function initSelectionFromUrl(){
             var r = new RegExp("(&|\\?)"+key+"=([^\&]*)");
             match = r.exec(queryString);
             if(match != null){
+            	hasFiltersInURL = true;
                 var val = decodeURIComponent(match[2]);
                 var selections = '%%' + val.split('+').join('%%%%') + '%%';
                 $(this).attr('data-selected-facets', searchStringUnEscape(selections) );
@@ -95,18 +97,21 @@ function doToggleFacet( facetPlaceholder , facetValue ){
     var facetType = facetPlaceholder.data('facet-type');
     var currentSel = facetPlaceholder.attr('data-selected-facets');
     var ident = '%%'+facetValue+'%%';
+    var isInitToggle = isInitialFilter( facetType, facetValue );
     if(!currentSel){
       currentSel = ""
     }
     if( currentSel.indexOf(ident) > -1 ){
-        facetPlaceholder.attr('data-selected-facets', currentSel.replace(ident, '') );
+        if(!isInitToggle){ //don't remove filter if this is an initial filter value
+          facetPlaceholder.attr('data-selected-facets', currentSel.replace(ident, '') );
+        }
     } else {
         var newVal = currentSel + ident;
         facetPlaceholder.attr('data-selected-facets', newVal );
     }
     filterFacets();
     updateFacets();
-    if(isInitialFilter( facetType, facetValue ) ){
+    if( isInitToggle ){
       removeInitialFilter( facetType, facetValue )
     } 
 }
@@ -119,8 +124,10 @@ function searchStringUnEscape(str) {
 var initialFilters = {};
 function filterKey( facetType, facetValue ){ return "filtered-"+facetType+"-" + facetValue; }
 function addInitialFilter( facetType, facetValue ){
-  initialFilters[ filterKey(facetType, facetValue) ] = true;
-  doToggleFacet( facetPlaceholderElems.filter('[data-facet-type=' + facetType + ']').first(), facetValue );
+  if(!hasFiltersInURL){
+    initialFilters[ filterKey(facetType, facetValue) ] = true;
+    doToggleFacet( facetPlaceholderElems.filter('[data-facet-type=' + facetType + ']').first(), facetValue );
+  }
 }
 function removeInitialFilter( facetType, facetValue ){
   initialFilters[ filterKey(facetType, facetValue) ] = false;
