@@ -87,11 +87,14 @@ function initSelectionFromUrl(){
 }
 
 function toggleFacet(event){
-    var elemText = event.currentTarget.textContent;
+    var facetValue = event.currentTarget.textContent;
     var facetPlaceholder = $(event.currentTarget).parent('.facet-placeholder');
+    doToggleFacet(facetPlaceholder, facetValue);
+}
+function doToggleFacet( facetPlaceholder , facetValue ){
     var facetType = facetPlaceholder.data('facet-type');
     var currentSel = facetPlaceholder.attr('data-selected-facets');
-    var ident = '%%'+elemText+'%%';
+    var ident = '%%'+facetValue+'%%';
     if(!currentSel){
       currentSel = ""
     }
@@ -102,13 +105,28 @@ function toggleFacet(event){
         facetPlaceholder.attr('data-selected-facets', newVal );
     }
     filterFacets();
-    updateFacets();    
+    updateFacets();
+    if(isInitialFilter( facetType, facetValue ) ){
+      removeInitialFilter( facetType, facetValue )
+    } 
 }
 function searchStringEscape(str) {
-	return str.replace("+", "\\plus");
+  return str.replace("+", "\\plus");
 }
 function searchStringUnEscape(str) {
-	return str.replace("\\plus,", "+");
+  return str.replace("\\plus,", "+");
+}
+var initialFilters = {};
+function filterKey( facetType, facetValue ){ return "filtered-"+facetType+"-" + facetValue; }
+function addInitialFilter( facetType, facetValue ){
+  initialFilters[ filterKey(facetType, facetValue) ] = true;
+  doToggleFacet( facetPlaceholderElems.filter('[data-facet-type=' + facetType + ']').first(), facetValue );
+}
+function removeInitialFilter( facetType, facetValue ){
+  initialFilters[ filterKey(facetType, facetValue) ] = false;
+}
+function isInitialFilter( facetType, facetValue ){
+  return initialFilters[ filterKey(facetType, facetValue) ] === true;//.some(fil => fil.facetType === facetType && fil.facetValue === facetValue));
 }
 function filterFacets(){
     var newSearchString = document.location.search;
@@ -123,7 +141,9 @@ function filterFacets(){
         var matches = []
         if(selectedStr.length > 0){
             while (match != null) {
-              matches.push( searchStringEscape(match[1]) );
+              if( !isInitialFilter( type, match[1] ) ){
+                matches.push( searchStringEscape(match[1]) );
+              }
               selectors.push('[' + dataSelector + '="' + match[1].replace('"','\\"') +'"]');
               match = myRegexp.exec(selectedStr);              
             }
